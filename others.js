@@ -1,5 +1,5 @@
 /**
- * 判断数据类型，可以覆盖绝大部分的数据类型，主要用于识别不同的对象
+ * 1. 判断数据类型，可以覆盖绝大部分的数据类型，主要用于识别不同的对象
  * @param {any} val
  * @returns {string} 类似于array、date...
  */
@@ -11,12 +11,7 @@ console.log(typeOf(new Date()))
 console.log(typeOf([]))
 console.log(typeOf(new RegExp()))
 
-/**
- * 手写call
- * @param {any} context 指定的this对象
- * @param  {...any} args 任意数量的参数
- * @returns 返回函数的返回值
- */
+/** 2. 手写call、apply、bind */
 Function.prototype._call = function (context, ...args) {
     // 1. 首先确定并储存新的this对象
     if (context === null || context === undefined) {
@@ -85,7 +80,38 @@ function sayHi(...args) {
 }
 
 sayHi._call({ name: 'ss' }, 1, 2, 3)
-sayHi._apply({ name: 'ss' },['aa', 'ppp'])
+sayHi._apply({ name: 'ss' }, ['aa', 'ppp'])
 
 sayHi._bind({ name: 'ss' }, 1, 2)(4, 5)
 sayHi._bindBetter({ name: 'ss' }, 2)(9, 6)
+
+/**
+ * 3. 手写实现instanceof关键字
+ * @param {object} obj 任何一个对象
+ * @param {function} constr 构造函数
+ * @returns {boolean}
+ */
+function _instanceof(obj, constr) {
+    const prototype = constr.prototype
+    let pointer = Object.getPrototypeOf(obj)
+
+    while (pointer !== null) {
+        if (pointer === prototype) {
+            return true
+        } else {
+            pointer = Object.getPrototypeOf(pointer)
+        }
+    }
+
+    return false
+}
+
+class Father {}
+class Son extends Father {}
+
+const father = new Father()
+const son = new Son()
+
+console.log(_instanceof([], Array))
+console.log(_instanceof(father, Father), _instanceof(father, Array))
+console.log(_instanceof(son, Father), son instanceof Father)
