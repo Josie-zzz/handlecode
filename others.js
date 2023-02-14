@@ -115,3 +115,62 @@ const son = new Son()
 console.log(_instanceof([], Array))
 console.log(_instanceof(father, Father), _instanceof(father, Array))
 console.log(_instanceof(son, Father), son instanceof Father)
+
+
+/**
+ * 4. 手写深拷贝
+ * @param {*} data 要复制的数据
+ * @param {*} map 创建一个map实例用来记录新建过的引用（可以没有这一步）
+ * @returns 一个新的复制过的对象
+ */
+function deepClone (data, map = new Map()) {
+    if(typeof data == 'object' && data !== nullZ) {
+        // 检查循环引用，如果已经存在就返回之前创建过的
+        if(map.get(data)) {
+            return data
+        }
+        const copyObj = Array.isArray(data) ? [] : {}
+        map.set(data, copyObj)
+        for(let key in data) {
+            // 原型上不考虑
+            if(Object.prototype.hasOwnProperty.call(data, key)) {
+                copyObj[key] = deepClone(data[key], map)
+            }
+        }
+        return copyObj
+    }
+
+    return data
+}
+const test = {
+    a: 4,
+    b: 6,
+    c: [1,2,3, {
+        ff: 5,
+        gg: 99
+    }],
+    ccc: {
+        gg: 99
+    },
+}
+test.test = test
+const test2 = deepClone(test)
+console.log(test2.c[3] === test.c[3], test2)
+
+
+/**
+ * 5. 数组扁平化
+ * @param {*} data 扁平化的数组
+ * @param {*} deep 想要铺平的层级
+ * @returns 
+ */
+function flat (data, deep) {
+    if (deep && deep != 0 && data.length) {
+        return data.reduce((pre, curt) => {
+            return pre.concat(flat(curt, deep - 1))
+        }, [])
+    }
+    
+    return data
+}
+console.log(flat([1,2,[2,3, [4,5, [9, 9, [10, 10]]]]], 3))
