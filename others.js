@@ -124,7 +124,7 @@ console.log(_instanceof(son, Father), son instanceof Father)
  * @returns 一个新的复制过的对象
  */
 function deepClone (data, map = new Map()) {
-    if(typeof data == 'object' && data !== nullZ) {
+    if(typeof data == 'object' && data !== null) {
         // 检查循环引用，如果已经存在就返回之前创建过的
         if(map.get(data)) {
             return data
