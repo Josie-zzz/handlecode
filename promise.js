@@ -167,6 +167,12 @@ class Promise {
         )
     }
 
+    // 一年后补充，感觉科一科这样写
+    finally2(callback) {
+        callback()
+        return this
+    }
+
     //这两个静态方法其实蛮简单，重点在于扩展 constructor 中的 resolve, reject 这俩方法
     // 这是因为value、reason很可能会是一个promise
     static resolve(value) {
@@ -344,10 +350,28 @@ Promise.allSettled([ p, p2]).then((val) => {
     console.log(val, 'allSettled')
 })
 
-Promise.any([p, p2]).then((val) => {
-    console.log(val, 'any')
-}, err => {
-    console.log(err, 'any')
+// Promise.any([p, p2]).then((val) => {
+//     console.log(val, 'any')
+// }, err => {
+//     console.log(err, 'any')
+// })
+
+new Promise((resolve, reject) => {
+    setTimeout(() => {
+        resolve('then')
+    }, 1000)
+}).finally(() => {
+    console.log('------print')
+}).then(res => {
+    console.log('then---', res)
 })
 
-
+new Promise((resolve, reject) => {
+    setTimeout(() => {
+        reject('catch')
+    }, 1000)
+}).finally(() => {
+    console.log('------print--')
+}).catch(res => {
+    console.log('catch---', res)
+})
