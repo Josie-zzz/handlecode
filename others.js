@@ -97,3 +97,5 @@ function flatOne (data) {
     return data
 }
 console.log(flatOne([1,2,[2,3, [4,5, [9, 9, [10, 10]]]]], 3), 'flatOne')
+
+console.log([1, 2, [3, 4], [5, [6, 7]]])
