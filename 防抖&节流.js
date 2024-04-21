@@ -20,6 +20,40 @@ function debounce (fn, delay) {
     }
 }
 
+/**
+ * 防抖函数 - 包含立即执行版本
+ * @param {function} fn 执行的函数
+ * @param {number} wait 等待时间
+ * @param {boolean} immediate 是否要立即执行【就是执行时机在一段时间的前面还是后面的问题】
+ * @returns 返回一个函数
+ */
+const debounce2 = (fn, wait, immediate) => {
+    let timer
+    return function (...args) {
+        // 如果计时器存在就清除
+        if (timer) {
+            clearTimeout(timer)
+        }
+        if (immediate) {
+            // 如果此刻没有定时器，就执行函数
+            let run = !timer
+            // 每次执行这里都是注册定时器，等到 wait 时间后重置 timer
+            timer = setTimeout(() => {
+                timer = null
+            }, wait)
+
+            if (run) {
+                fn.apply(this, args)
+            }
+        } else {
+            // 这里相对简单
+            timer = setTimeout(() => {
+                fn.apply(this, args)
+            }, wait)
+        }
+    }
+}
+
 // 理解：debounce 返回一个函数，这个函数可以被任意时间触发
 // 但是此函数的回调函数只会在函数被触发的最后一次的delay秒后执行
 const fun = debounce(function(e) {
@@ -45,6 +79,23 @@ function throttle (fn, delay) {
             fn.apply(this, args)
             // 重置上一次的时间
             preTime = now
+        }
+    }
+}
+
+// 节流 - 计时器版本
+const throttle2 = function (fn, wait) {
+    let timer
+    return function(...args) {
+        // timer不在才需要执行
+        if(!timer) {
+            // 执行函数
+            fn.apply(this, args)
+            // 设置定时器在 wait 时间后清楚 timer
+            timer = setTimeout(() => {
+                // 重置 timer
+                timer = null
+            }, wait)
         }
     }
 }
